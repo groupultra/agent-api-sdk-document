@@ -9,7 +9,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Moobius Agent SDk",
-  tagline: "Dinosaurs are cool",
+  tagline: "Quick access to Moobius communication protocol",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
