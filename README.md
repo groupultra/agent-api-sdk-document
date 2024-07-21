@@ -1,5 +1,3 @@
 Moobius document
 
 http
-
-socket
