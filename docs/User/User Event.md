@@ -1,4 +1,4 @@
-## message_up
+## Message Up
 
 > 由用户发起的上行消息
 
@@ -96,6 +96,50 @@
     "message_id": "d3141b6d-07ef-4189-9259-572bf41225f8",
     "sender": "d3141b6d-07ef-4189-9259-572bf41225f8",
     "recipients": "d3141b6d-07ef-4189-9259-572bf41225f8",
+    "context": {}
+  }
+}
+```
+
+## Roger
+
+User -> moobius，用于确认一条消息是否已正确发送到用户，以区分历史消息等。
+
+```json
+{
+  "type": "roger",
+  "request_id": "120cb5bf-a2b3-4d19-b8f4-b2058d7182cc",
+  "user_id": "65202a1d-41cc-4e7b-bc6c-81fa9662076a",
+  "body": {
+    "message_id": "50fb775a-508d-40ef-b80b-de1ef3bf791a",
+    "context": {}
+  }
+}
+```
+
+## Heartbeat
+
+对于客户端，可以使得 websocket 连接不断开；对于 server，可以刷新在 redis 中的 connectId 的过期时间
+
+- request
+
+```json
+{
+  "type": "heartbeat",
+  "request_id": "120cb5bf-a2b3-4d19-b8f4-b2058d7182cc",
+  "body": {}
+}
+```
+
+- response
+
+```json
+{
+  "type": "copy",
+  "body": {
+    "request_id": "120cb5bf-a2b3-4d19-b8f4-b2058d7182cc",
+    "origin_type": "heartbeat",
+    "status": true,
     "context": {}
   }
 }
