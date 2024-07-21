@@ -66,17 +66,28 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "Agent SDK",
+        title: "Moobius",
         logo: {
           alt: "My Site Logo",
           src: "img/Logo-dark.png",
         },
         items: [
           {
-            type: "docSidebar",
-            sidebarId: "tutorialSidebar",
+            type: "doc",
             position: "left",
-            label: "Tutorial",
+            docId: "introduction",
+            label: "Docs",
+          },
+          {
+            to: "/http-api",
+            position: "left",
+            label: "Http API",
+          },
+          {
+            type: "docSidebar",
+            position: "left",
+            sidebarId: "Communication",
+            label: "Communication Codes",
           },
           {
             href: "https://github.com/groupultra",
@@ -93,7 +104,15 @@ const config = {
             items: [
               {
                 label: "Tutorial",
-                to: "/docs/intro",
+                to: "/docs",
+              },
+              {
+                label: "HTTP API",
+                to: "/http-api",
+              },
+              {
+                label: "Communication Codes",
+                to: "/docs/Communication",
               },
             ],
           },
