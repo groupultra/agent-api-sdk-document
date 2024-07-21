@@ -24,10 +24,10 @@ jobs:
 
       - name: Deploy to GitHub Pages
         env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          GIT_USER: yhcss1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USE_SSH: true
         run: |
           git config --global user.email "yihang19950903@gmail.com"
           git config --global user.name "yhcss1"
-          git remote set-url origin https://yhcss1:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/groupultra/agent-api-sdk-document.git
+          git remote set-url origin git@github.com:groupultra/agent-api-sdk-document.git
           npm run deploy
