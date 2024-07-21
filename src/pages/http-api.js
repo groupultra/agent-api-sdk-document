@@ -9,7 +9,11 @@ export default function Home() {
       description="Description will go into a meta tag in <head />"
     >
       <main style={{ width: "100%", height: 2800 }}>
-        <iframe src="/Moobius-HTTP.html" width={"100%"} height={"100%"} />
+        <iframe
+          src={siteConfig.baseUrl + "Moobius-HTTP.html"}
+          width={"100%"}
+          height={"100%"}
+        />
       </main>
     </Layout>
   );
