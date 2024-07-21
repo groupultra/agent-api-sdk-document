@@ -11,6 +11,7 @@ const config = {
   title: "Moobius Docs",
   tagline: "Quick access to Moobius communication protocol",
   favicon: "img/favicon.ico",
+  trailingSlash: true,
 
   // Set the production url of your site here
   url: "https://groupultra.github.io",
