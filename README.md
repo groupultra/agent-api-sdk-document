@@ -1,5 +1,0 @@
-Moobius document
-
-http
-
-socket
