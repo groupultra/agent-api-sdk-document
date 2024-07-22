@@ -14,7 +14,13 @@
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
   // By default, Docusaurus generates a sidebar from the docs folder structure
-  docs: ["introduction"],
+  introduction: [
+    {
+      type: "doc",
+      label: "Introduction",
+      id: "introduction",
+    },
+  ],
   Communication: [
     {
       type: "doc",
@@ -26,13 +32,13 @@ const sidebars = {
       label: "Type",
       link: {
         type: "generated-index",
-        description: "有如下类型的payload",
+        description: "Payload listed as follow",
       },
       items: [
         {
           label: "User",
           type: "category",
-          description: "用户发起的事件或动作",
+          description: "Initiated by User",
           link: {
             type: "doc",
             id: "User/User",
@@ -42,7 +48,7 @@ const sidebars = {
         {
           label: "Service",
           type: "category",
-          description: "Service发起的事件或动作",
+          description: "Initiated by Service",
           link: {
             type: "doc",
             id: "Service/Service",
@@ -56,7 +62,7 @@ const sidebars = {
         {
           label: "Moobius",
           type: "category",
-          description: "Moobius发起的事件或动作",
+          description: "Initiated by Moobius",
           link: {
             type: "doc",
             id: "Moobius/Moobius",

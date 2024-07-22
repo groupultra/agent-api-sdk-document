@@ -2,7 +2,7 @@
 2. Frontend User Changes Profile（TODO）
 3. Client Sends Upward Message
 4. Client Button Click
-5. Client Creates channel（HTTP 部分，不在 ws）
+5. Client Creates channel
 6. Client Joins channel
 7. Client Leaves channel
 8. Service Initialization

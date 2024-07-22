@@ -1,6 +1,6 @@
-> 有如下类型的 payload
+> Payload listed as follow
 
-- User 发起的
+- Initiated by User
 
   - User Login
     - user_login
@@ -12,7 +12,7 @@
     - roger
     - heartbeat
 
-- Service 发起的
+- Initiated by Service
   - Service Login
     - service_login
   - Service Event
@@ -20,5 +20,5 @@
     - update
   - Other Service Actions
     - heartbeat
-- Moobius 发起的
+- Initiated by Moobius
   - copy

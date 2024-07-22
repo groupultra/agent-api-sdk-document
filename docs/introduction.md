@@ -1,6 +1,3 @@
----
-description: Docusaurus was designed from the ground up to be easily installed and used to get your website up and running quickly.
-slug: /
----
+⚡️ 快速接入 Moobius 通信协议，支持 browser 和 nodejs 两端，帮助您快速搭建属于自己的定制化 Moobius
 
-# Introduction
+![login](../static/img/img-2.png)

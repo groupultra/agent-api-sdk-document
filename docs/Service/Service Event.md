@@ -1,12 +1,10 @@
 ## Message Down
 
-> Service Event，由 service 发起的下行消息，sender 是 service 向接收者声称的发送者 character_id。
+> Service Event, downward message initiated by service. sender is a character_id claimed by the service.
 
-这里的 group_id 是 service 发给 moobius 的，由 service 创建管理，HTTP 接口管理
+group_id is sent by service to moobius, created and managed by service using HTTP API.
 
-- service 发给 moobius 的形如：
-
-- request
+- service send to moobius be like:
 
 ```json
 {
@@ -27,31 +25,32 @@
 }
 ```
 
-| Field                        | Type               | Value                                                     | Desc                                                                                       |
-| ---------------------------- | ------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| type                         | string             | message_down                                              | 消息类型                                                                                   |
-| request_id                   | uuid               | uuid                                                      |                                                                                            |
-| service_id                   | uuid               | uuid                                                      | moobius 剔除                                                                               |
-| body - subtype               | string             | "text" / "file" / "audio" / "image" / "separator" /"card" | separator 显示一个分割线                                                                   |
-| body - content - text        | string             |                                                           | subtype 为 text 时使用                                                                     |
-| body - content - path        | string             |                                                           | subtype 不为 text 和 separator 时使用                                                      |
-| body - content - filename    | string             |                                                           | subtype 为 file 时使用，指定文件名                                                         |
-| body - content - size        | int                |                                                           | subtype 为 file 时使用，显示文件尺寸                                                       |
-| body - content - link        | string             |                                                           | subtype 为 card 时使用                                                                     |
-| body - content - title       | string             |                                                           | subtype 为 card 时使用                                                                     |
-| body - content - button      | string             |                                                           | subtype 为 card 时使用                                                                     |
-| body - content - text        | string             |                                                           | subtype 为 card 时使用                                                                     |
-| Body - content - tool        | Object or [object] |                                                           |                                                                                            |
-| Body - content - tool - name | string             |                                                           |                                                                                            |
-| Body - content - tool -input | string             |                                                           |                                                                                            |
-| Body -content - tool -output | string             |                                                           |                                                                                            |
-| body - channel_id            | uuid               |                                                           |                                                                                            |
-| body - recipients            | uuid               |                                                           | 该消息的目标接收者，moobius 剔除                                                           |
-| body - message_id            | uuid               |                                                           | 在 service 发到 moobius 时不带，moobius 生成                                               |
-| body - sender                | uuid               |                                                           | 该消息展示出来的发送者                                                                     |
-| body - timestamp             | int                |                                                           | 以毫秒为单位                                                                               |
-| body - context               | object             |                                                           | 非必须                                                                                     |
-| body - context - is_active   | bool               | true 有 service，false 没有                               | service 不需要自己加，moobius 会加；即使 service 试图加上，也会由 moobius 强行改为正确的值 |
+| Field                        | Type               | Value                                                     | Desc                                                                                                                                                                  |
+| ---------------------------- | ------------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type                         | string             | message_down                                              | Type of the packet                                                                                                                                                    |
+| request_id                   | uuid               | uuid                                                      |                                                                                                                                                                       |
+| service_id                   | uuid               | uuid                                                      | Culled by moobius                                                                                                                                                     |
+| body - subtype               | string             | "text" / "file" / "audio" / "image" / "separator" /"card" | separator shows a line-shaped separator                                                                                                                               |
+| body - content - text        | string             |                                                           | Used when subtype is text or is card                                                                                                                                  |
+| body - content - path        | string             |                                                           | Used when subtype is not text or is not separator                                                                                                                     |
+| body - content - filename    | string             |                                                           | Used when subtype is file to indicate filename                                                                                                                        |
+|                              |
+| body - content - size        | int                |                                                           | Used when subtype is file to indicate file size                                                                                                                       |
+| body - content - link        | string             |                                                           | Used when subtype is card; click button to redirect                                                                                                                   |
+| body - content - title       | string             |                                                           | Used when subtype is card; card title                                                                                                                                 |
+| body - content - button      | string             |                                                           | Used when subtype is card; words on the button                                                                                                                        |
+| body - content - text        | string             |                                                           | Used when subtype is card                                                                                                                                             |
+| Body - content - tool        | Object or [object] |                                                           |                                                                                                                                                                       |
+| Body - content - tool - name | string             |                                                           |                                                                                                                                                                       |
+| Body - content - tool -input | string             |                                                           |                                                                                                                                                                       |
+| Body -content - tool -output | string             |                                                           |                                                                                                                                                                       |
+| body - channel_id            | uuid               |                                                           |                                                                                                                                                                       |
+| body - recipients            | uuid               |                                                           | Target of the message. Culled by moobius                                                                                                                              |
+| body - message_id            | uuid               |                                                           | Generated by moobius                                                                                                                                                  |
+| body - sender                | uuid               |                                                           | The sender that shows as the sender of the msg                                                                                                                        |
+| body - timestamp             | int                |                                                           | In millisecs                                                                                                                                                          |
+| body - context               | object             |                                                           | Optional                                                                                                                                                              |
+| body - context - is_active   | bool               |                                                           | true if a service is bound to the channel, otherwise false; Added by service. Service claiming is_active is false is invalid, and moobius will always tell the truth. |
 
 - response
 
@@ -70,7 +69,7 @@
 }
 ```
 
-- User 收到的 moobius 发出的格式
+- User receives be like
 
 ```json
 {
@@ -90,3 +89,5 @@
   }
 }
 ```
+
+Markdown type is supported in text messages.

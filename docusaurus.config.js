@@ -74,9 +74,9 @@ const config = {
         },
         items: [
           {
-            type: "doc",
+            type: "docSidebar",
             position: "left",
-            docId: "introduction",
+            sidebarId: "introduction",
             label: "Docs",
           },
           {

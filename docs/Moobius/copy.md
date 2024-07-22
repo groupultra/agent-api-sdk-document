@@ -1,9 +1,10 @@
 ## Copy
 
-> moobius 对请求（包括 User 和 Service）的状态回复，每当收到一条消息的时候都发回一条 copy
-> 系统级，对应 request_id，body 里有细节；用 status 表示是否成功，true 表示成功，false 表示失败；context 中的 message 表示额外的信息或错误详情。
+> moobius sends "copy" to confirm a packet is sent to the moobius, no matter if packets come from users or services.
 
-moobius 对消息收到的确认：
+> System level, uses the same request_id as the packet that triggers the copy. Body contains messages to indicate whether the packet is processed correctly or some error occurs. Status indicates success or failure; message in the content indicates extra info or error details.
+
+Moobius confirms it has received a packet:
 
 ```json
 {
@@ -17,14 +18,13 @@ moobius 对消息收到的确认：
 }
 ```
 
-用 status 表示是否成功，true 表示成功，false 表示失败
-| origin_type | status_type | Desc | Context |
-| -------- | ------ | ---------- | -------- |
-| message_up |true|消息上行成功 |message_id |
-| message_up | false|消息由于某种原因发送失败|reason|
-| message_down | true|消息下行成功 | |
-| message_down | false|消息由于某种原因发送失败 |reason |
-| user_login |true | | |
-| user_login | false| | reason|
-| service_login | true| | |
-| service_login | false| | reason|
+| origin_type   | status_type | Desc                                            | Context    |
+| ------------- | ----------- | ----------------------------------------------- | ---------- |
+| message_up    | true        | Upward message sent successful                  | message_id |
+| message_up    | false       | Upward message sent failed due to some reason   | reason     |
+| message_down  | true        | Downward message sent successful                |            |
+| message_down  | false       | Downward message sent failed due to some reason | reason     |
+| user_login    | true        |                                                 |            |
+| user_login    | false       |                                                 | reason     |
+| service_login | true        |                                                 |            |
+| service_login | false       |                                                 | reason     |

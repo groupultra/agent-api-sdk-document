@@ -1,8 +1,8 @@
 ## Action
 
-> 由 service 处理的用户操作，从业务功能角度讲属于低频操作（相对于 User Event (message_up+button_click)），因此合并为一个，各 subtype 中定义具体类型。目前的前端会在用户打开 channel 的时候发送各种 fetch action。
+> User actions to be handled by the service. On the opposite of User Event (message_up+button_click), these actions are called at a relatively low frequency. Currently the frontend will send all kinds of fetch actions when user opens a channel (or join).
 
-user -> moobius -> service
+> user -> moobius -> service
 
 - request
 
@@ -19,16 +19,16 @@ user -> moobius -> service
 }
 ```
 
-| Field             | Type   | Value                                                                                                                                                  | Desc     |
-| ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| type              | string | action                                                                                                                                                 | 消息类型 |
-| request_id        | uuid   |                                                                                                                                                        |          |
+| Field             | Type   | Value                                                                                                                                                  | Desc                                                                                                                                                                                                                                 |
+| ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| type              | string | action                                                                                                                                                 | Type of the packet                                                                                                                                                                                                                   |
+| request_id        | uuid   |                                                                                                                                                        |                                                                                                                                                                                                                                      |
 | user_id           | uuid   |                                                                                                                                                        |
-| body - subtype    | string | "join_channel" / "leave_channel" / "fetch_characters" / "fetch_buttons" / "fetch_channel_info" / "fetch_canvas" / "fetch_style" / "fetch_context_menu" |
-| body - channel_id | uuid   |                                                                                                                                                        |          |
-| body - context    | object |                                                                                                                                                        | 非必须   |
+| body - subtype    | string | "join_channel" / "leave_channel" / "fetch_characters" / "fetch_buttons" / "fetch_channel_info" / "fetch_canvas" / "fetch_style" / "fetch_context_menu" | Fetch and update don't necessarily have a one-to-one relationship. They can be isolated, but we suppose most of the services would offer feasible updates when receiving fetches. Updates notice the frontend to update the webview. |
+| body - channel_id | uuid   |                                                                                                                                                        |                                                                                                                                                                                                                                      |
+| body - context    | object |                                                                                                                                                        | Optional                                                                                                                                                                                                                             |
 
-- service 收到的 response：
+- Service received be like:
 
 ```json
 {
@@ -44,8 +44,9 @@ user -> moobius -> service
 
 ## Button Click
 
-- 用户发起的 service 特定功能调用（按钮）
-  User -> moobius -> service: moobius 仅仅起到传递消息的角色，不入库
+- When a user clicks a button.
+
+  User -> moobius -> service: moobius acts like a messenger, won't be recorded to db.
 
 ```json
 {
@@ -70,12 +71,13 @@ user -> moobius -> service
 }
 ```
 
-arguments 参见 update 中的 button，value 可能为 string 或 int，由前端校验，service 也会校验
+Value could be string or int; it's recommended that the frontend verifies these arguments.
 
 ## Context Menu Click
 
-- 用户点击右键菜单
-  User -> moobius -> service: moobius 仅仅起到传递消息的角色，不入库
+- Clicks a button in the right-click menu.
+
+  User -> moobius -> service: moobius acts like a messenger, won't be recorded to db.
 
 ```json
 {
@@ -105,4 +107,4 @@ arguments 参见 update 中的 button，value 可能为 string 或 int，由前�
 }
 ```
 
-arguments 与 button click 基本一致，不再赘述。
+Almost the same as above; the only difference is that the message is also passed as context. message_id, message_subtype and message_content describe the message, same as message_down.

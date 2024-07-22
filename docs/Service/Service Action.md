@@ -1,7 +1,8 @@
 ## Update
 
-> 更新用户看到的内容
-> service -> moobius -> user: service 给 user 发东西，不入库，moobius 只传递
+> service event, updates what the users see
+
+> service -> moobius -> user: service sends to user directly, won't be recorded to the db, moobius acts like a messenger
 
 ```json
 {
@@ -20,28 +21,28 @@
 }
 ```
 
-| Field                       | Type     | Value                                                                            | Desc                                |
-| --------------------------- | -------- | -------------------------------------------------------------------------------- | ----------------------------------- |
-| type                        | string   | update                                                                           | 消息类型                            |
-| request_id                  | uuid     | uuid                                                                             |                                     |
-| user_id                     | uuid     | uuid                                                                             | moobius 剔除                        |
-| body - subtype              | string   | "update_characters" / "update_buttons" / "update_channel_info" / "update_canvas" |                                     |
-| body - content - characters | uuid     | 传递一个由 service 控制的 group 的 uuid，直接显示该 group 下的所有用户           | subtype 为 update_characters 时使用 |
-| body - content - buttons    | button[] |                                                                                  | subtype 为 update_buttons 时使用    |
-| body - channel_id           | uuid     |                                                                                  |                                     |
-| body - recipients           | uuid     |                                                                                  |                                     |
-| body - context              | object   |                                                                                  | 非必须                              |
+| Field                       | Type     | Value                                                                                                     | Desc                                    |
+| --------------------------- | -------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| type                        | string   | update                                                                                                    | Type of the packet                      |
+| request_id                  | uuid     | uuid                                                                                                      |                                         |
+| user_id                     | uuid     | uuid                                                                                                      | Culled by moobius                       |
+| body - subtype              | string   | "update_characters" / "update_buttons" / "update_channel_info" / "update_canvas"                          |                                         |
+| body - content - characters | uuid     | Passes a uuid of a group that is controlled by the service; shows everyone in the group to the receipient | Used when subtype is update_characters  |
+| body - content - buttons    | button[] |                                                                                                           | Used when subtype is update_buttons     |
+| body - channel_id           | uuid     |                                                                                                           |                                         |
+| body - recipients           | uuid     |                                                                                                           | Target of the action. Culled by moobius |
+| body - context              | object   |                                                                                                           | Optional                                |
 
-### 角色 Character
+### Character
 
-- 使用如下格式表示一个 character
+- a Character can be defined as follows:
 
 ```json
 {
   "character_id": "0c7d4295-d89c-4cf1-aafc-aec33ea2ae33",
   "context": {
-    "name": "张三",
-    "description": "这个人太懒了，什么都没有写",
+    "name": "",
+    "description": "",
     "avatar": ""
   }
 }
@@ -49,21 +50,21 @@
 
 ### Button
 
-> button 分大致两类，一类会位于输入框的上侧点一下就能用，另一类会弹出一个窗口、感觉像是个表单，这两者用一个 new_window: true/false 决定。optional 与否前端可以核验，但其有效性校验实际由 service 负责。
+> There are two types of buttons. The first type only needs a click to work, but the second type pops up a window, acting like a form. new_window: true/false decides which type it is. The frontend could verify whether the user fills the optional or required arguments correctly (recommended to do so), but it's not guaranteed that all the fields are filled correctly when passing the invoke of the buttons to the backend.
 
 > ![new_window: true的时候类似这样](/img/img-1.jpeg)
 
-> 目前一个 button 一定有一个提交按钮，并且每个 button 除该按钮外绝对没有其他按钮，未来可能会做出调整。button_text 代表着这个 button 提交按钮上显示的文字。
+> Every pop-up-window button has exactly one button, but it is subject to change in the future. button_text indicates text on the button.
 
-> 目前只有一种 button 组件：输入框。下拉选单是一种 enum 输入框，文件上传是一种 file 输入框。
+> Now there's only one widget type: input. Pull-down menu is an enum-typed input. File upload is a file-typed input.
 
-> 使用如下格式表示一个 button：
+> a button can be defined as follows:
 
 ```json
 {
   "button_id": "button_id",
-  "button_name": "喵喵喵",
-  "button_text": "一键猫叫",
+  "button_name": "Meow",
+  "button_text": "Meows a lot",
   "new_window": false
 }
 ```
@@ -71,15 +72,15 @@
 ```json
 {
   "button_id": "button_id",
-  "button_name": "一些列表",
-  "button_text": "点击发送",
+  "button_name": "Some lists",
+  "button_text": "Click to send",
   "new_window": true,
   "arguments": [
     {
       "name": "arg1",
       "type": "enum",
-      "values": ["选我", "别选我"],
-      "placeholder": "可选的"
+      "values": ["Choose me!", "Don't choose me!"],
+      "placeholder": "You can choose one!"
     },
     {
       "name": "arg2",
@@ -94,47 +95,49 @@
 }
 ```
 
-| Field                     | Type     | Value                                                                                                                       | Desc                                                                                                                                                                                                |
-| ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| button_id                 | string   |                                                                                                                             | 由 service 定义的、区分每个 button 的名称                                                                                                                                                           |
-| button_name               | string   |                                                                                                                             | 展示出来的 button 名称                                                                                                                                                                              |
-| new_window                | bool     |                                                                                                                             | 点一下就调用还是需要展开一个新窗口填东西                                                                                                                                                            |
-| button_text               | string   |                                                                                                                             | 可选，按钮上的字；对 new_window: false 无效                                                                                                                                                         |
-| disable                   | bool     |                                                                                                                             | optional，默认为 false                                                                                                                                                                              |
-| arguments                 | object   |                                                                                                                             | 如果是 function，它描述多个输入框的结构；对 new_window: false 无效                                                                                                                                  |
-| arguments - name          | string   |                                                                                                                             | 该参数的名称                                                                                                                                                                                        |
-| arguments - optional      | bool     |                                                                                                                             | 该参数是否为可选参数，可选，默认为 false                                                                                                                                                            |
-| arguments - type          | string   | "string" / "number" / "enum" / "password" / "invalid" / "file" / "image" / "textbox" 等,TODO: "group"，由用户选择一个 group | 该参数的类型，前端验证输入是否合法；如果是 password，打进去的会变成\*\*\*\*；如果是 invalid 则显示为禁用的输入框;image 和 file 的区别是 image 有个预览; textbox 和 string 的区别是 textbox 支持换行 |
-| arguments - placeholder   | string   |                                                                                                                             | 该输入框的占位符，可选；对于文件自动忽略；显示为浅灰色，点一下就看不见                                                                                                                              |
-| arguments - default_value | string   |                                                                                                                             | 该输入框的默认值，可选；对于文件自动忽略                                                                                                                                                            |
-| arguments - values        | string[] |                                                                                                                             | 如果是 enum，则是下拉选择框，这个描述了都有哪些可选值，可为空，为空则是显示禁用的下拉框                                                                                                             |
+| Field                     | Type     | Value                                                                                                                             | Desc                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| button_id                 | string   |                                                                                                                                   | Defined by the service to distinguish buttons                                                                                                                                                                                                                                                                                                                                                |
+| button_name               | string   |                                                                                                                                   | Button name shown to the users                                                                                                                                                                                                                                                                                                                                                               |
+| new_window                | bool     |                                                                                                                                   | Whether pops up a new window; optional, false by default                                                                                                                                                                                                                                                                                                                                     |
+| button_text               | string   |                                                                                                                                   | Text on the button of the pop-up window, if not the same as button_name. new_window: false doesn't need this                                                                                                                                                                                                                                                                                 |
+| disable                   | bool     |                                                                                                                                   | Optional, false by default; True makes the button unable to be clicked (but the user can still invoke this by using cmd)                                                                                                                                                                                                                                                                     |
+| arguments                 | object   |                                                                                                                                   | Arguments for pop-up window. Optional, new_window: false doesn't need this; If not offered when new_window: true, only a button will be shown on the pop-up window.                                                                                                                                                                                                                          |
+| arguments - name          | string   |                                                                                                                                   | Name of the argument                                                                                                                                                                                                                                                                                                                                                                         |
+| arguments - optional      | bool     |                                                                                                                                   | Whether the argument is optional; optional, false by default                                                                                                                                                                                                                                                                                                                                 |
+| arguments - type          | string   | "string" / "number" / "enum" / "password" / "invalid" / "file" / "image" / "textbox" 等,TODO: "group", choose a group by the user | Type of the argument; frontend is recommended to verify whether the input meets the condition. If type is password, all input should show like \*\*\*\*; If type is invalid, it shows as an invalid input bar; The difference between image and file is that image shows a preview before uploading; The difference between textbox and string is that users can break lines in the textbox. |
+| arguments - placeholder   | string   |                                                                                                                                   | Placeholder for the input, optional; auto ignored when is a file of image. Shows in gray, and will disappear when clicked or some words in the input bar.                                                                                                                                                                                                                                    |
+| arguments - default_value | string   |                                                                                                                                   | Default value for the input, optional; auto ignored when is a file of image. Acts like the user has already inputted something. If type is enum, must be a valid selection.                                                                                                                                                                                                                  |
+| arguments - values        | string[] |                                                                                                                                   | If type is enum, becomes a pull-down menu. This describes the values that can be selected. If is empty, becomes an invalid input bar.                                                                                                                                                                                                                                                        |
 
-此处的 button_text 预计会挪到别的地方，但要等到有第三种 button 上线，因为不是所有的 button 都有按钮（比如一个滑动条就没有）。
+We would introduce more widgets, such as scrollbar; these structs are to change at that time.
 
 ### Channel Info
 
-- 使用如下格式表示 channel 的 info：
+- Info of every channel can be automatically changed over time or some user actions (or messages).
+
+  Note not fully implemented
 
 ```json
 {
   "channel_id": "65202a1d-41cc-4e7b-bc6c-81fa9662076a",
   "channel_name": "CH114514",
   "context": {
-    "channel_description": "这是一个示例channel",
+    "channel_description": "Example channel",
     "channel_type": "dcs"
   }
 }
 ```
 
-| Field        | Type   | Value                 | Desc           |
-| ------------ | ------ | --------------------- | -------------- |
-| channel_type | string | "scs" / "dcs" / "ccs" | channel 的类型 |
+| Field        | Type   | Value                 | Desc                |
+| ------------ | ------ | --------------------- | ------------------- |
+| channel_type | string | "scs" / "dcs" / "ccs" | Type of the channel |
 
 ### Display / Canvas
 
-> service 发起的 canvas 显示
+> service controls the display of the canvas
 
-> content 是一个数组，每个成员表示一个页面，每个页面有最多一个图片最多一个文字
+> content is a list, and every member of it describes a page on the canvas. Every page can contain one text at most and one image at most.
 
 ```json
 {
@@ -145,12 +148,12 @@
     "subtype": "update_canvas",
     "content": [
       {
-        "path": "第一张图片",
-        "text": "第一段文字"
+        "path": "path/to/first/image",
+        "text": "some texts bluhbluh"
       },
       {
-        "path": "第二张图片",
-        "text": "第二段文字"
+        "path": "path/to/second/image",
+        "text": "more texts i have had enough of this"
       }
     ],
     "channel_id": "50fb775a-508d-40ef-b80b-de1ef3bf791a",
@@ -160,18 +163,18 @@
 }
 ```
 
-| Field                 | Type   | Value           | Desc                             |
-| --------------------- | ------ | --------------- | -------------------------------- |
-| body - subtype        | string | "update_canvas" |                                  |
-| body - content - text | string |                 | 显示的文字，无或为空串则清除     |
-| body - content - path | string |                 | 显示的图片，无或为空串则清除     |
-| body - channel_id     | uuid   |                 |                                  |
-| body - recipients     | uuid   |                 | 该消息的目标接收者，moobius 剔除 |
-| body - context        | object |                 | 非必须                           |
+| Field                 | Type   | Value           | Desc                                    |
+| --------------------- | ------ | --------------- | --------------------------------------- |
+| body - subtype        | string | "update_canvas" |                                         |
+| body - content - text | string |                 | The text to show; optional              |
+| body - content - path | string |                 | The image to show; optional             |
+| body - channel_id     | uuid   |                 |                                         |
+| body - recipients     | uuid   |                 | Target of the packet, culled by moobius |
+| body - context        | object |                 | Optional                                |
 
 ### Context Menu
 
-- service 发起的右键菜单内容显示
+- Right-click menu on messages, provided by the service
 
 ```json
 {
@@ -190,8 +193,8 @@
           {
             "name": "arg1",
             "type": "enum",
-            "values": ["选我", "别选我"],
-            "placeholder": "可选的"
+            "values": ["saint", "grinch"],
+            "placeholder": "choose wisely"
           }
         ]
       }
@@ -203,13 +206,17 @@
 }
 ```
 
-具体的 arguments 参数与 Button 一致，不再赘述。arguments 可选，new_window 默认为 false
+Same as button arguments. Arguments are optional. new_window defaults to be false.
 
-### Style (带维护)
+Use item_name and item_id to distinguish different buttons. Can specify some types, and users can only call the ctx_menu_click on these message_down types.
 
-- 后端（service）控制前端样式，仅由后端发出
+### Style (not recommended to use)
 
-service->moobius->user
+- service controls the frontend view
+
+Considering that you can make a new frontend, this part can be handled and redesigned at your own demand. These parts are for the official moobius frontend.
+
+service->moobius->client
 
 ```json
 {
@@ -241,12 +248,12 @@ service->moobius->user
 }
 ```
 
-| Field                        | Type   | Value                                                                                       | Desc                                                                                                                                                                                                   |
-| ---------------------------- | ------ | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| body - content - widget      | string | "canvas" / "whisper" / "characters" / "input" / "channel" / "buttons" /"message"            | whisper 同时控制输入框右下角是否出现 whisper                                                                                                                                                           |
-| widget 的小 widget           | string | 如果希望指定某个 widget 的一部分，那么用-做分隔。 whisper-edit whisper-add input-typebutton |                                                                                                                                                                                                        |
-| body - content - display     | string | "visible" / "invisible" /"highlight"                                                        | display 表示显示，invisible 表示隐藏，highlight 表示高亮遮罩；当 highlight 时，之前是 invisible 也会变成 display；同一时间只有一个东西能 highlight，一个 highlight 时别的会自动变回 display；highlight |
-| body - content - expand      | bool   |                                                                                             | 可选，subtype 为 canvas 时，通过该选项控制 canvas 展开还是收回                                                                                                                                         |
-| body - content - button_hook | object |                                                                                             | 如果是遮罩，用户点掉这个遮罩的时候会 trigger 这个 hook。对其的描述见 update - button，new_window 强制为 false。                                                                                        |
-| body - content - text        | string |                                                                                             | 若为 highlight 或 channel_popup，显示的文字。                                                                                                                                                          |
-| body - content - index       | string |                                                                                             | button 或 characters 时，传 button_id 或 user 的 uuid 指定特定位置。                                                                                                                                   |
+| Field                        | Type   | Value                                                                                                          | Desc                                                                                                                                                                                                                                                                                                         |
+| ---------------------------- | ------ | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| body - content - widget      | string | "canvas" / "whisper" / "characters" / "input" / "channel" / "buttons" /"message"                               | whisper also controls whether the group-selection bar adjacent to the input box shows                                                                                                                                                                                                                        |
+| subwidget of the widgets     | string | Use - as separator to specify one certain part of one bigger widget. whisper-edit whisper-add input-typebutton |                                                                                                                                                                                                                                                                                                              |
+| body - content - display     | string | "visible" / "invisible" /"highlight"                                                                           | display shows, invisible hides, highlight highlights (and shades other widgets). When highlighted, if the target widget is invisible, it becomes "display" automatically. Only one widget can be highlighted at one time; specifying a new highlight one will turn the previous one falls back to "display". |
+| body - content - expand      | bool   |                                                                                                                | Controls canvas expand or not when subtype is canvas.                                                                                                                                                                                                                                                        |
+| body - content - button_hook | object |                                                                                                                | If there's mask (highlight or channel_popup), when the mask is clicked, this hook will be invoked. It's like a normal button but not shown in button lists. new_window is always false.                                                                                                                      |
+| body - content - text        | string |                                                                                                                | If the subtype is highlight or channel_popup, this is the text to show.                                                                                                                                                                                                                                      |
+| body - content - index       | string |                                                                                                                | button or characters, insert a specified button_id or uuid to the specified position.                                                                                                                                                                                                                        |
