@@ -20,6 +20,15 @@ const sidebars = {
       label: "Introduction",
       id: "introduction",
     },
+    {
+      type: "category",
+      label: "Getting Started",
+      collapsed: false,
+      link: {
+        type: "generated-index",
+      },
+      items: ["docs/Installation"],
+    },
   ],
   Communication: [
     {

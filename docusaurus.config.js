@@ -5,6 +5,35 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import { themes as prismThemes } from "prism-react-renderer";
+import versions from "./versions.json";
+function isPrerelease(version) {
+  return (
+    version.includes("-") ||
+    version.includes("alpha") ||
+    version.includes("beta") ||
+    version.includes("rc")
+  );
+}
+function getLastStableVersion() {
+  const lastStableVersion = versions.find((version) => !isPrerelease(version));
+  if (!lastStableVersion) {
+    throw new Error("unexpected, no stable Docusaurus version?");
+  }
+  return lastStableVersion;
+}
+function getLastStableVersionTuple() {
+  const lastStableVersion = getLastStableVersion();
+  const parts = lastStableVersion.split(".");
+  if (parts.length !== 3) {
+    throw new Error(`Unexpected stable version name: ${lastStableVersion}`);
+  }
+  return [parts[0], parts[1], parts[2]];
+}
+function getAnnouncedVersion() {
+  const [major, minor] = getLastStableVersionTuple();
+  return `${major}.${minor}`;
+}
+const announcedVersion = getAnnouncedVersion();
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -52,7 +81,9 @@ const config = {
       }),
     ],
   ],
-
+  customFields: {
+    announcedVersion,
+  },
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
