@@ -145,7 +145,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                href: "https://discord.com/invite/KzRAgFc6",
+                href: "https://discord.gg/za77wbZTun",
               },
             ],
           },
@@ -159,7 +159,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Moobius, Inc.`,
       },
       prism: {
         theme: prismThemes.github,
