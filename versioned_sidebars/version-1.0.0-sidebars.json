@@ -13,6 +13,15 @@
         "type": "generated-index"
       },
       "items": ["docs/Installation", "docs/Usage"]
+    },
+    {
+      "type": "category",
+      "label": "Method References",
+      "link": {
+        "type": "doc",
+        "id": "docs/Method"
+      },
+      "items": ["docs/Send"]
     }
   ],
   "Communication": [
