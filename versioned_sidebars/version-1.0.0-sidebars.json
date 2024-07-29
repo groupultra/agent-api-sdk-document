@@ -21,7 +21,7 @@
         "type": "doc",
         "id": "docs/Method"
       },
-      "items": ["docs/Send"]
+      "items": ["docs/Auth", "docs/Send"]
     }
   ],
   "Communication": [

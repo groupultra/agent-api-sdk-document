@@ -13,7 +13,6 @@
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  // By default, Docusaurus generates a sidebar from the docs folder structure
   introduction: [
     {
       type: "doc",
@@ -27,7 +26,16 @@ const sidebars = {
       link: {
         type: "generated-index",
       },
-      items: ["docs/Installation"],
+      items: ["docs/Installation", "docs/Usage"],
+    },
+    {
+      type: "category",
+      label: "Method References",
+      link: {
+        type: "doc",
+        id: "docs/Method",
+      },
+      items: ["docs/Auth", "docs/Send"],
     },
   ],
   Communication: [
@@ -87,5 +95,3 @@ const sidebars = {
     },
   ],
 };
-
-export default sidebars;

@@ -2,16 +2,6 @@
 description: Quote in your code, you can refer to the example
 ---
 
-### Instantiate the Moobius client object
-
-```javascript
-import moobius from "moobius";
-const moobius_client = moobius({
-  httpUrl: "https://api.moobius.net/",
-  wsUrl: "wss://ws.moobius.net",
-});
-```
-
 ### Example in browser environment
 
 ```html
