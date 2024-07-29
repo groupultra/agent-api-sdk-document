@@ -33,7 +33,7 @@ const sidebars = {
       label: "Method References",
       link: {
         type: "doc",
-        id: "docs/Method",
+        id: "Methods",
       },
       items: ["docs/Auth", "docs/Send"],
     },
