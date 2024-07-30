@@ -1,3 +1,3 @@
 ---
-description: Quote in your code, you can refer to the example
+description: Send a specified event to the socket
 ---

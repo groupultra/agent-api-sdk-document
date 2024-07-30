@@ -35,7 +35,7 @@ const sidebars = {
         type: "doc",
         id: "Methods",
       },
-      items: ["docs/Auth", "docs/Send"],
+      items: ["docs/Auth", "docs/Channel", "docs/User", "docs/Send"],
     },
   ],
   Communication: [

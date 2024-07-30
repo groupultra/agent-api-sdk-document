@@ -4,7 +4,7 @@ description: The auth module defines user authorization related operations such 
 
 > The auth module defines user authorization related operations such as user login, registration, password retrieval, and token refresh.
 
-### auth.sign_up()
+### auth.sign_up
 
 > User registration, send verification code to email
 
