@@ -5,10 +5,10 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import npm2yarn from "@docusaurus/remark-plugin-npm2yarn";
-import { themes as prismThemes } from "prism-react-renderer";
 import remarkMath from "remark-math";
 import configTabs from "./src/remark/configTabs.js";
-
+import PrismDark from "./src/utils/prismDark";
+import PrismLight from "./src/utils/prismLight";
 import versions from "./versions.json";
 function isPrerelease(version) {
   return (
@@ -167,8 +167,20 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Moobius, Inc.`,
       },
       prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        theme: PrismLight,
+        darkTheme: PrismDark,
+        additionalLanguages: [
+          "javascript",
+          "latex",
+          "haskell",
+          "matlab",
+          "PHp",
+          "powershell",
+          "bash",
+          "diff",
+          "json",
+          "scss",
+        ],
       },
     }),
 };
