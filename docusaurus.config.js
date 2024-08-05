@@ -166,6 +166,8 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Moobius, Inc.`,
       },
+      deploy:
+        "docusaurus deploy --repository-url git@github.com-yhcss1:groupultra/agent-api-sdk-document.git",
       prism: {
         theme: PrismLight,
         darkTheme: PrismDark,
