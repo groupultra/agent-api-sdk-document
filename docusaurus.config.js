@@ -45,7 +45,7 @@ const config = {
   tagline: "Quick access to Moobius communication protocol",
   favicon: "img/favicon.ico",
   trailingSlash: true,
-  githubHost: "git@github.com-yhcss1:groupultra/agent-api-sdk-document.git",
+  githubHost: "git@github.com-yhcss3:groupultra/agent-api-sdk-document.git",
   // Set the production url of your site here
   url: "https://groupultra.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
