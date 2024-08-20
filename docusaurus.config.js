@@ -45,7 +45,7 @@ const config = {
   tagline: "Quick access to Moobius communication protocol",
   favicon: "img/favicon.ico",
   trailingSlash: true,
-  githubHost: "ygithub.com-yhcss3",
+  githubHost: "github.com-yhcss3",
   // Set the production url of your site here
   url: "https://groupultra.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
